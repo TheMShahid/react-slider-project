@@ -1,8 +1,10 @@
+import Carousel from "./Carousel";
+
 function App() {
   return (
-    <div>
-      <h2>slider project with react</h2>
-    </div>
+    <main>
+      <Carousel />
+    </main>
   );
 }
 
