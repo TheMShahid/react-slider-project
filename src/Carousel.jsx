@@ -1,19 +1,49 @@
 import { useState } from "react";
 import { shortList, list, longList } from "./data";
 import { FaQuoteRight, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { useEffect } from "react";
 
 const Carousel = () => {
-  const [people, setPeople] = useState(shortList);
+  const [people, setPeople] = useState(longList);
+  const [currentPerson, setCurrentPerson] = useState(0);
 
-  const prevSlide = () => {};
-  const nextSlide = () => {};
+  const prevSlide = () => {
+    setCurrentPerson((oldPerson) => {
+      const newPerson = (oldPerson - 1 + people.length) % people.length;
+      return newPerson;
+    });
+  };
+
+  const nextSlide = () => {
+    setCurrentPerson((oldPerson) => {
+      const newPerson = (oldPerson + 1) % people.length;
+      return newPerson;
+    });
+  };
+
+  useEffect(() => {
+    let id = setInterval(() => {
+      nextSlide();
+    }, 2000);
+    return () => {
+      clearInterval(id);
+    };
+  }, [currentPerson]);
 
   return (
     <section className="slider-container">
-      {people.map((person) => {
+      {people.map((person, personIndex) => {
         const { id, image, name, title, quote } = person;
+
         return (
-          <article className="slide" key={id}>
+          <article
+            className="slide"
+            key={id}
+            style={{
+              transform: `translateX(${100 * (personIndex - currentPerson)}%)`,
+              opacity: currentPerson === personIndex ? 1 : 0,
+              visibility: currentPerson === personIndex ? "visible" : "hidden",
+            }}>
             <img src={image} alt={name} className="person-img" />
             <h5 className="name">{name}</h5>
             <p className="title">{title}</p>
